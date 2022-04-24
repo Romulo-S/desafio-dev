@@ -14,6 +14,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.launchersoft.cnabparser.configuration.CustomProperties;
+import com.launchersoft.cnabparser.exception.CNABNotFoundException;
+import com.launchersoft.cnabparser.exception.CNABStorageException;
 
 public class FileCNABStorageService {
 
@@ -27,7 +29,7 @@ public class FileCNABStorageService {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new CNABStorageException("Could not create the directory where the uploaded files will be stored.", ex);
         }
     }
 
@@ -38,7 +40,7 @@ public class FileCNABStorageService {
         try {
             // Check if the file's name contains invalid characters
             if(fileName.contains("..")) {
-                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+                throw new CNABStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
@@ -47,7 +49,7 @@ public class FileCNABStorageService {
 
             return fileName;
         } catch (IOException ex) {
-            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+            throw new CNABStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 
@@ -58,10 +60,10 @@ public class FileCNABStorageService {
             if(resource.exists()) {
                 return resource;
             } else {
-                throw new MyFileNotFoundException("File not found " + fileName);
+                throw new CNABNotFoundException("File not found " + fileName);
             }
         } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException("File not found " + fileName, ex);
+            throw new CNABNotFoundException("File not found " + fileName, ex);
         }
     }
 }
