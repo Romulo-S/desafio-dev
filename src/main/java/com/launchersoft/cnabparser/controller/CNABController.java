@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.launchersoft.cnabparser.model.UploadFileResponse;
+
 @RestController
 public class CNABController {
 
