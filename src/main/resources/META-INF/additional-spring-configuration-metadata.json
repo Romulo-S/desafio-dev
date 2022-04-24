@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "file.upload-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.launchersoft.cnabparser.configuration.CustomProperties",
+      "description": "Description for file.upload-dir."
+  }
+] }
