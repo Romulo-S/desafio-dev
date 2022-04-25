@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.launchersoft.cnabparser.model.UploadFileResponse;
+import com.launchersoft.cnabparser.service.FileCNABStorageService;
 
 @RestController
 public class CNABController {
@@ -28,11 +31,11 @@ public class CNABController {
     private static final Logger logger = LoggerFactory.getLogger(CNABController.class);
 
     @Autowired
-    private CNABStorageService CNABStorageService;
+    private FileCNABStorageService fileCNABStorageService;
 
     @PostMapping("/uploadCNABFile")
     public UploadFileResponse uploadCNABFile(@RequestParam("file") MultipartFile file) {
-        String fileName = CNABStorageService.storeFile(file);
+        String fileName = fileCNABStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/downloadFile/")
@@ -47,14 +50,14 @@ public class CNABController {
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
         return Arrays.asList(files)
             .stream()
-            .map(file -> uploadFile(file))
+            .map(file -> uploadCNABFile(file))
             .collect(Collectors.toList());
     }
 
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        Resource resource = fileCNABStorageService.loadFileAsResource(fileName);
 
         // Try to determine file's content type
         String contentType = null;
